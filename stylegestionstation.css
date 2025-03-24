@@ -1,0 +1,91 @@
+h1
+{
+	color : red;
+	font-size : 40px;
+	font-style : bold;
+	text-align : center;
+	border: 3px red groove;
+	border-radius: 10px;
+	box-shadow: 6px 6px 6px black;
+}
+
+label
+{
+	display : block;
+	float : left;
+	width : 350px;
+}
+
+.formulaire1
+{
+	font-size : 20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-top:30px;
+	padding-bottom:30px;
+	border: 3px blue groove;
+	border-radius: 10px;
+	box-shadow: 3px 3px 2px yellow;
+	background-color : #E2E6FF
+}
+
+.formulaire2
+{
+	font-size : 20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-top:30px;
+	padding-bottom:30px;
+	border: 3px blue groove;
+	border-radius: 10px;
+	box-shadow: 3px 3px 2px yellow;
+	background-color : #FFE600
+}
+
+.formulaire3
+{
+	font-size : 20px;
+	padding-left:20px;
+	padding-right:20px;
+	padding-top:30px;
+	padding-bottom:30px;
+	border: 3px blue groove;
+	border-radius: 10px;
+	box-shadow: 3px 3px 2px yellow;
+	background-color : #E2FFFF
+}
+
+fieldset
+{
+	border: 3px green groove;
+	border-radius: 10px;
+	box-shadow: 3px 3px 2px green;
+	background-color :#A9FFDA
+}
+
+legend 
+{
+	color:#DF3F3F;
+	font-weight:bold;
+	font-size : 30px;
+}
+
+input[type=submit]
+{
+	display:block;
+	display: inline-block;
+	width:100px;
+	margin-left:5px;
+	box-shadow:1px 1px 1px #A941DA;
+	border: 3px #A941DA groove;
+	border-radius: 10px;
+	cursor:pointer;
+	text-align : center;
+	font-size : 20px;
+	width : 150px
+ }
+ 
+ div
+ {
+	text-align : center;
+ }
