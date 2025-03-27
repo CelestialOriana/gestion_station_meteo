@@ -90,8 +90,4 @@ Pour une version plus complète, il serait utile d'ajouter:
 
 ## Auteur
 
-*Votre nom ici*
-
-## Licence
-
-*Informations sur la licence, le cas échéant*
+*Emmanuel*
