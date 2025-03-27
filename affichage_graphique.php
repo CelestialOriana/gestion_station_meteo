@@ -25,7 +25,10 @@ if ($ValId_station && $ValNumJour) {
     }
 
     // b. Préparer la requête SELECT pour récupérer les données de la station au jour spécifié
-    $requete = $Bdd->prepare('SELECT * FROM mesures WHERE id_station = :id_station AND date = :date');
+    $requete = $Bdd->prepare('SELECT m.*, s.nom as nom_station, m.vitesse_vent, m.direction_vent 
+                            FROM mesures m 
+                            JOIN stations s ON m.id_station = s.id 
+                            WHERE m.id_station = :id_station AND m.date = :date');
     $requete->execute(array(
         'id_station' => $ValId_station,
         'date' => $ValNumJour
@@ -37,13 +40,24 @@ if ($ValId_station && $ValNumJour) {
     if ($donnees) {
         // d. Affichage des données dans le tableau
         echo '<table>';
-        echo '<tr><th>Nom de la Station</th><th>Température</th><th>Précipitation</th><th>Vitesse du Vent</th><th>Direction du Vent</th></tr>';
+        echo '<tr><th>Nom de la station</th><th>Température</th><th>Précipitation</th><th>Vitesse du Vent</th><th>Direction du Vent</th></tr>';
         echo '<tr>';
-        echo '<td>' . htmlspecialchars($donnees['id_station']) . '</td>';
+        
+        // Afficher le nom de la station (au lieu de l'ID)
+        echo '<td>' . htmlspecialchars($donnees['nom_station'] ?? $donnees['id_station']) . '</td>';
+        
+        // Afficher la température avec l'unité
         echo '<td>' . htmlspecialchars($donnees['temperature']) . '°C</td>';
-        echo '<td>' . htmlspecialchars($donnees['ensoleillement']) . ' mm</td>';
-        echo '<td>' . htmlspecialchars($donnees['temperature']) . ' km/h</td>'; // Je suppose que la vitesse du vent est dans 'temperature' pour l'exemple, sinon, à remplacer
-        echo '<td>' . htmlspecialchars($donnees['ensoleillement']) . '°</td>'; // Je suppose que la direction du vent est dans 'ensoleillement', à remplacer si nécessaire
+        
+        // Afficher la précipitation avec l'unité
+        echo '<td>' . htmlspecialchars($donnees['precipitation'] ?? $donnees['ensoleillement']) . ' mm</td>';
+        
+        // Afficher la vitesse du vent avec l'unité
+        echo '<td>' . htmlspecialchars($donnees['vitesse_vent'] ?? 10) . ' km/h</td>';
+        
+        // Afficher la direction du vent avec l'unité
+        echo '<td>' . htmlspecialchars($donnees['direction_vent'] ?? 0) . '°</td>';
+        
         echo '</tr>';
 
         // 2. Interprétation des données avec des images
@@ -58,13 +72,14 @@ if ($ValId_station && $ValNumJour) {
             $tempImage = 'images/temperature_chaud.png';  // Température supérieure à 32°C
         }
 
-        // b. Précipitation
+        // b. Précipitation (supposons que ensoleillement contient les données de précipitation)
         $precipImage = '';
-        if ($donnees['ensoleillement'] == 0) {
+        $precipitation = $donnees['precipitation'] ?? $donnees['ensoleillement'];
+        if ($precipitation == 0) {
             $precipImage = 'images/soleil.png'; // Pas de précipitation
-        } elseif ($donnees['ensoleillement'] >= 1 && $donnees['ensoleillement'] <= 4) {
+        } elseif ($precipitation >= 1 && $precipitation <= 4) {
             $precipImage = 'images/pluie_faible.png'; // Précipitation entre 1 et 4 mm
-        } elseif ($donnees['ensoleillement'] >= 4 && $donnees['ensoleillement'] <= 8) {
+        } elseif ($precipitation > 4 && $precipitation <= 8) {
             $precipImage = 'images/pluie_moyen.png'; // Précipitation entre 4 et 8 mm
         } else {
             $precipImage = 'images/pluie_forte.png'; // Précipitation supérieure à 8 mm
@@ -72,7 +87,7 @@ if ($ValId_station && $ValNumJour) {
 
         // c. Vitesse du vent
         $windImage = '';
-        $windSpeed = 10; // Exemple, remplacer par la vraie donnée de vitesse du vent
+        $windSpeed = $donnees['vitesse_vent'] ?? 10; // Utiliser la vitesse du vent réelle si disponible
         if ($windSpeed < 2) {
             $windImage = 'images/vent_faible.png'; // Vent faible
         } elseif ($windSpeed >= 2 && $windSpeed <= 13) {
@@ -99,20 +114,17 @@ if ($ValId_station && $ValNumJour) {
 
         // e. Direction du vent
         $directionImage = '';
-        $windDirection = $donnees['ensoleillement']; // Exemple, remplacer par la vraie direction du vent
-        switch ($windDirection) {
-            case 0:
-                $directionImage = 'images/direction_n.png';
-                break;
-            case 90:
-                $directionImage = 'images/direction_e.png';
-                break;
-            case 180:
-                $directionImage = 'images/direction_s.png';
-                break;
-            case 270:
-                $directionImage = 'images/direction_o.png';
-                break;
+        $windDirection = $donnees['direction_vent'] ?? 0; // Utiliser la direction du vent réelle si disponible
+        
+        // Utiliser switch pour déterminer l'image de direction selon la valeur
+        if ($windDirection >= 315 || $windDirection < 45) {
+            $directionImage = 'images/direction_n.png'; // Nord
+        } elseif ($windDirection >= 45 && $windDirection < 135) {
+            $directionImage = 'images/direction_e.png'; // Est
+        } elseif ($windDirection >= 135 && $windDirection < 225) {
+            $directionImage = 'images/direction_s.png'; // Sud
+        } elseif ($windDirection >= 225 && $windDirection < 315) {
+            $directionImage = 'images/direction_o.png'; // Ouest
         }
 
         // 3. Afficher les images d'interprétation sous forme de tableau
@@ -141,6 +153,12 @@ if ($ValId_station && $ValNumJour) {
     echo 'Veuillez entrer à la fois l\'ID de la station et le numéro du jour.';
 }
 ?>
+
+<form action="gestion_stations.php" method="GET">
+    <div>
+        <input type="submit" value="RETOUR" />
+    </div>
+</form>
 
 </body>
 </html>
