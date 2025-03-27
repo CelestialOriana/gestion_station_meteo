@@ -84,10 +84,6 @@ Pour une version plus complète, il serait utile d'ajouter:
    - Valeurs de température et d'ensoleillement (pour l'insertion uniquement)
 3. Cliquez sur le bouton "Valider" pour exécuter l'opération
 
-## Captures d'écran
-
-*Des captures d'écran du système peuvent être ajoutées ici*
-
 ## Auteur
 
 *Emmanuel*
